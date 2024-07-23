@@ -29,33 +29,32 @@ const Product_page = () => {
   const toEdit = (id) => {
     router.push(`/editproductdetails/${id}`);
   };
-
+  async function fetchProducts() {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `https://farmer-api-9a00.onrender.com/products?page=${
+          currentPage + 1
+        }&limit=${itemsPerPage}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setLoading(false);
+      console.log("response", response);
+      setProducts(response?.data?.items);
+      setTotalPages(response?.data?.totalPages);
+      setCurrentPage(response?.data?.currentPageNumber - 1);
+    } catch (error) {
+      setLoading(false);
+      console.log("Error fetching products:", error);
+    }
+  }
   useEffect(() => {
     AOS.init();
     AOS.refresh();
-    async function fetchProducts() {
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          `https://farmer-api-9a00.onrender.com/products?page=${
-            currentPage + 1
-          }&limit=${itemsPerPage}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        setLoading(false);
-        console.log("response", response);
-        setProducts(response?.data?.items);
-        setTotalPages(response?.data?.totalPages);
-        setCurrentPage(response?.data?.currentPageNumber - 1);
-      } catch (error) {
-        setLoading(false);
-        console.log("Error fetching products:", error);
-      }
-    }
 
     fetchProducts();
   }, [currentPage]);
@@ -63,7 +62,7 @@ const Product_page = () => {
   const handleDelete = async () => {
     try {
       setDeleteLoading(true);
-      await axios.delete(
+      const responce = await axios.delete(
         `https://farmer-api-9a00.onrender.com/products/${productToDelete}`,
         {
           headers: {
@@ -71,9 +70,9 @@ const Product_page = () => {
           },
         }
       );
-      setProducts((prevProducts) =>
-        prevProducts.filter((product) => product._id !== productToDelete)
-      );
+      if (responce) {
+        fetchProducts();
+      }
       setDeleteLoading(false);
       toast.success("Product Deleted Successfully");
     } catch (error) {
