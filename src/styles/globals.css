@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@media only screen and (max-width:767px){
+    .list{
+        padding-left: 25px;
+    }
+    .add{
+        margin-right: 20px;
+    }
+   
+}
+
+@media only screen and (max-width:375px){
+    #list{
+       display: block;
+    }
+    .add{
+    display: block;
+    }
+}
+
+@media only screen and (min-width:640px){
+   .box{
+    width: 600px;
+   }
+}
+
+@media only screen and (min-width:320px){
+    .box{
+     width: 220px;
+    }
+ }
+@media only screen and (min-width:375px){
+    .box{
+     width: 247px;
+    }
+ }
+@media only screen and (min-width:425px){
+    .box{
+     width: 247px;
+    }
+    .deletebox{
+        width: 247px;
+       }
+ }
+
+ /* delete */
+
+ 
+ @media only screen and (min-width:320px){
+     .deletebox{
+      width: 220px;
+     }
+  }
+ @media only screen and (min-width:375px){
+     .deletebox{
+      width: 247px;
+     }
+  }
+
+ @media only screen and (min-width:768px){
+     .deletebox{
+      width: 350px;
+     }
+  }
+ @media only screen and (min-width:1025px){
+     .deletebox{
+      width: 450px;
+     }
+   
+  }
+
+ 
+
