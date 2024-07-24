@@ -37,7 +37,7 @@ function Login() {
         localStorage.setItem("token", response?.data?.data?.access_token);
         toast.success(response?.data?.message);
       }
-      router.push("/dashboard");
+      router.push("/product");
     } catch (response) {
       toast.error(response?.data?.message);
       setErrorMessage("Invalid Credentials");
@@ -109,12 +109,13 @@ function Login() {
           <div className="flex items-center">
             <button
               type="submit"
-              className="bg-blue-500 py-2 px-3 rounded-md text-white hover:bg-blue-700"
+              className="bg-blue-500 w-24 py-2 px-3 rounded-md text-white hover:bg-blue-700 flex justify-center items-center"
+              disabled={loading}
             >
               {loading ? (
-                <TailSpin height="24" width="24" color="white" />
+                <TailSpin height="25" width="25" color="white" />
               ) : (
-                "Login"
+                "Submit"
               )}
             </button>
 

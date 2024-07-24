@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
-import Product_page from "../Product_page/Product_page";
-import Side_nav from "../Side_nav/Side_nav";
-
+import Product_page from "../product/ProductPage";
+import Side_nav from "../SideNav/Side_nav";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -16,7 +15,7 @@ const Dashboard = () => {
   return (
     <div>
       <Side_nav />
-      <Product_page  />
+      <Product_page />
     </div>
   );
 };

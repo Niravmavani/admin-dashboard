@@ -25,7 +25,7 @@ const Fpass = () => {
       setLoading(false);
       toast.success(response?.data?.message);
     } catch (error) {
-      console.log(error);
+      toast.error(error?.response?.data?.message);
       setLoading(false);
     }
   }
@@ -48,12 +48,13 @@ const Fpass = () => {
           <div className="flex items-center ">
             <button
               type="submit"
-              className="bg-blue-500 py-2 px-3 rounded-md text-white hover:bg-blue-700"
+              className="bg-blue-500 w-24 py-2 px-3 rounded-md text-white hover:bg-blue-700 flex justify-center items-center"
+              disabled={loading}
             >
               {loading ? (
-                <TailSpin height="24" width="24" color="white" />
+                <TailSpin height="25" width="25" color="white" />
               ) : (
-                "Verify"
+                "Submit"
               )}
             </button>
             <div className="flex items-center pl-9 ">

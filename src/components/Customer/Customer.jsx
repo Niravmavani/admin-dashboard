@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { TailSpin } from "react-loader-spinner";
 import { toast } from "react-toastify";
 import { IoClose } from "react-icons/io5";
-import SideNav from "../Side_nav/Side_nav";
+import SideNav from "../SideNav/Side_nav";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import ReactPaginate from "react-paginate";
@@ -28,7 +28,7 @@ const Customer = () => {
   const router = useRouter();
 
   const toEdit = (id) => {
-    router.push(`/editcustomer/${id}`);
+    router.push(`/customer/edit/${id}`);
   };
 
   useEffect(() => {
@@ -107,13 +107,13 @@ const Customer = () => {
         className="md:ml-[199px] ml-20  p-5  w-full overflow-x-hidden "
         data-aos="fade-left"
       >
-        <div className="flex items-center justify-between">
-          <div className="list md:pl-5 sm:text-xl text-md md:text-2xl lg:text-2xl font-bold text-gray-800">
+        <div className="flex items-center justify-between productHeader">
+          <div className="list sm:text-xl text-md md:text-2xl lg:text-2xl font-bold text-gray-800">
             Customer List
           </div>
           <div className="">
             <Link
-              href="/addcustomer"
+              href="/customer/add"
               className="add  md:mr-5 transition duration-600 hover:bg-gradient-to-br hover:from-white hover:to-white hover:text-black hover:outline hover:outline-purple-600 bg-gradient-to-br from-indigo-600 to-purple-600 text-white text-sm md:text-lg py-2 px-4 rounded-lg shadow-md "
             >
               Add Customer
@@ -204,7 +204,7 @@ const Customer = () => {
                 </tbody>
               </table>
             )}
-            <div className="pagination mt-3 flex justify-end items-center">
+            <div className="pagination mt-3 flex justify-center md:justify-end items-center ">
               <ReactPaginate
                 previousLabel={"Previous"}
                 nextLabel={"Next"}
@@ -215,18 +215,22 @@ const Customer = () => {
                 pageRangeDisplayed={5}
                 onPageChange={handlePageClick}
                 containerClassName={
-                  "flex flex-wrap justify-center items-center space-x-2 text-gray-700"
+                  "flex justify-center items-center space-x-2"
                 }
                 activeClassName={
-                  "bg-blue-500 text-white border border-blue-500 rounded px-4 py-2 hover:bg-gray-100 hover:text-black"
+                  "bg-blue-500 text-white border border-blue-500 rounded px-3 sm:px-4 py-1 sm:py-2"
                 }
                 previousClassName={
-                  "bg-white border border-gray-300 rounded px-4 py-2 hover:bg-gray-100"
+                  "bg-white border border-gray-300 rounded pagi px-3 sm:px-4 py-1 sm:py-2 hover:bg-gray-100"
                 }
                 nextClassName={
-                  "bg-white border border-gray-300 rounded px-4 py-2 hover:bg-gray-100"
+                  "bg-white border border-gray-300 rounded px-3 sm:px-4 py-1 sm:py-2 hover:bg-gray-100"
                 }
                 disabledClassName={"cursor-not-allowed"}
+                pageClassName={
+                  "px-3 sm:px-4 py-1 sm:py-2 border border-gray-300 rounded hover:bg-gray-100"
+                }
+                pageLinkClassName={"flex items-center justify-center"}
               />
             </div>
           </div>
@@ -251,12 +255,14 @@ const Customer = () => {
 
               <button
                 onClick={handleDelete}
-                className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition duration-300"
+                type="submit"
+                className="bg-red-600 w-24 py-2 px-3 rounded-md text-white hover:bg-red-700 flex justify-center items-center"
+                disabled={loading}
               >
                 {deleteloading ? (
-                  <TailSpin height="24" width="24" color="white" />
+                  <TailSpin height="25" width="25" color="white" />
                 ) : (
-                  "Delete"
+                  "Submit"
                 )}
               </button>
             </div>

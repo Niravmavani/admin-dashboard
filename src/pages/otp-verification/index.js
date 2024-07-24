@@ -1,4 +1,4 @@
-import Otp from "@/components/Otp-page/Otp";
+import Otp from "@/components/OtpPage/Otp";
 import React from "react";
 
 const index = () => {

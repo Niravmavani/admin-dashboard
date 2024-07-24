@@ -1,10 +1,10 @@
-import Rpass from "@/components/resetPass/Reset-pass";
+import AddProduct from "@/components/product/AddProduct/AddProduct";
 import React from "react";
 
 const index = () => {
   return (
     <div>
-      <Rpass />
+      <AddProduct />
     </div>
   );
 };

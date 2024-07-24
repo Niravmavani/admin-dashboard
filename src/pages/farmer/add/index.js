@@ -1,10 +1,10 @@
-import Rpass from "@/components/resetPass/Reset-pass";
+import AddFarmer from "@/components/Farmer/AddFarmer/AddFarmer";
 import React from "react";
 
 const index = () => {
   return (
     <div>
-      <Rpass />
+      <AddFarmer />
     </div>
   );
 };

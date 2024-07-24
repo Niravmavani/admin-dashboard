@@ -3,27 +3,22 @@
 @tailwind utilities;
 
 @media only screen and (max-width:767px){
-    .list{
-        padding-left: 25px;
-    }
     .add{
         margin-right: 20px;
     }
    
 }
 
-@media only screen and (max-width:375px){
-    #list{
-       display: block;
-    }
-    .add{
-    display: block;
-    }
-}
+
 
 @media only screen and (min-width:640px){
    .box{
     width: 600px;
+   }
+}
+@media only screen and (min-width:381px){
+   .list{
+   padding-left: 20px;
    }
 }
 
@@ -71,6 +66,31 @@
      }
    
   }
+ @media only screen and (max-width:455px){
+     .pagi{
+      margin-left: 75px;
+     }
+   
+  }
+ @media only screen and (max-width:380px){
+     .productHeader{
+      display: block;
+      margin-left: 20px;
+      
+     }
+     .add{
+        margin-top: 10px;
+        display: block;
+        text-align: center;
+        }
+        .list{
+            text-align: center;
+        }
+        /* .pagination{
+        display:contents ;
+        } */
+  }
 
+  
  
 

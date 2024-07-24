@@ -8,19 +8,18 @@ import { useRouter } from "next/router";
 import { TailSpin } from "react-loader-spinner";
 import { toast } from "react-toastify";
 import { IoClose } from "react-icons/io5";
-import SideNav from "../SideNav/Side_nav";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import ReactPaginate from "react-paginate";
 
 const Product_page = () => {
-  const [farmer, setFarmer] = useState([]);
-  const [selectedFarmer, setSelectedFarmer] = useState();
+  const [products, setProducts] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState();
   const [loading, setLoading] = useState(false);
   const [deleteloading, setDeleteLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showDataModal, setShowDataModal] = useState(false);
-  const [farmerToDelete, setFarmerToDelete] = useState(null);
+  const [productToDelete, setProductToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(5);
   const [totalPages, setTotalPages] = useState(0);
@@ -28,56 +27,54 @@ const Product_page = () => {
   const router = useRouter();
 
   const toEdit = (id) => {
-    router.push(`/farmer/edit/${id}`);
+    router.push(`/product/edit/${id}`);
   };
-
-  useEffect(() => {
-    AOS.init();
-    AOS.refresh();
-    async function fetchFarmers() {
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          `https://farmer-api-9a00.onrender.com/farmers?page=${
-            currentPage + 1
-          }&limit=${itemsPerPage}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        setLoading(false);
-        console.log("response", response);
-        setFarmer(response?.data?.items);
-        setCurrentPage(response?.data?.currentPageNumber - 1);
-
-        setTotalPages(response?.data?.totalPages);
-      } catch (error) {
-        setLoading(false);
-        console.log("Error fetching products:", error);
-      }
-    }
-
-    fetchFarmers();
-  }, [currentPage]);
-
-  const handleDelete = async () => {
+  async function fetchProducts() {
     try {
-      setDeleteLoading(true);
-      await axios.delete(
-        `https://farmer-api-9a00.onrender.com/farmers/${farmerToDelete}`,
+      setLoading(true);
+      const response = await axios.get(
+        `https://farmer-api-9a00.onrender.com/products?page=${
+          currentPage + 1
+        }&limit=${itemsPerPage}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
-      setFarmer((prevFarmers) =>
-        prevFarmers.filter((farmer) => farmer._id !== farmerToDelete)
+      setLoading(false);
+      console.log("response", response);
+      setProducts(response?.data?.items);
+      setTotalPages(response?.data?.totalPages);
+      setCurrentPage(response?.data?.currentPageNumber - 1);
+    } catch (error) {
+      setLoading(false);
+      console.log("Error fetching products:", error);
+    }
+  }
+  useEffect(() => {
+    AOS.init();
+    AOS.refresh();
+
+    fetchProducts();
+  }, [currentPage]);
+
+  const handleDelete = async () => {
+    try {
+      setDeleteLoading(true);
+      const responce = await axios.delete(
+        `https://farmer-api-9a00.onrender.com/products/${productToDelete}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
       );
+      if (responce) {
+        fetchProducts();
+      }
       setDeleteLoading(false);
-      toast.success("Farmer Deleted Successfully");
+      toast.success("Product Deleted Successfully");
     } catch (error) {
       console.log("Error deleting product:", error);
       setDeleteLoading(false);
@@ -88,35 +85,35 @@ const Product_page = () => {
   };
 
   const confirmDelete = (id) => {
-    setFarmerToDelete(id);
+    setProductToDelete(id);
     setShowModal(true);
   };
 
   const productDetail = (item) => {
     setShowDataModal(true);
-    setSelectedFarmer(item);
+    setSelectedProduct(item);
   };
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
+
   return (
     <div className="flex bg-gray-100 min-h-screen">
-      <SideNav />
       <div
-        className="md:ml-[199px] ml-20  p-5  w-full overflow-x-hidden "
+        className="md:ml-[199px] ml-20  p-5  w-full overflow-x-hidden"
         data-aos="fade-left"
       >
         <div className="flex items-center justify-between productHeader">
           <div className="list sm:text-xl text-md md:text-2xl lg:text-2xl font-bold text-gray-800">
-            Farmer List
+            Product List
           </div>
           <div className="">
             <Link
-              href="/farmer/add"
+              href="/product/add"
               className="add  md:mr-5 transition duration-600 hover:bg-gradient-to-br hover:from-white hover:to-white hover:text-black hover:outline hover:outline-purple-600 bg-gradient-to-br from-indigo-600 to-purple-600 text-white text-sm md:text-lg py-2 px-4 rounded-lg shadow-md "
             >
-              Add Farmer
+              Add Product
             </Link>
           </div>
         </div>
@@ -135,56 +132,45 @@ const Product_page = () => {
               <table className="w-full rtl:text-right whitespace-nowrap">
                 <thead className="bg-gray-200 text-gray-600 uppercase ">
                   <tr className="border-b border-t text-sm sm:text-sm md:text-md lg:text-md">
-                    <th className="py-2 px-3 text-start">image</th>
-                    <th className="py-2 px-3 ">Name</th>
-                    <th className="py-2 px-3">Phone</th>
-                    <th className="py-2 px-3">Village</th>
-                    <th className="py-2 px-3 ">Gender</th>
-                    <th className="py-2 px-3 ">Username</th>
-                    <th className="py-2 px-3 ">Email</th>
-                    <th className="py-2 px-3 text-end">Action</th>
+                    <th className="py-2 px-3 text-start w-[170px]">Image</th>
+                    <th className="py-2">Name</th>
+                    <th className="py-2">Type</th>
+                    <th className="py-2 px-3 text-end w-[200px]">Actions</th>
                   </tr>
                 </thead>
 
                 <tbody>
-                  {farmer.map((farmer) => (
+                  {products?.map((product) => (
                     <tr
-                      key={farmer._id}
+                      key={product._id}
                       className="border-b last:border-0 hover:bg-gray-50 transition"
                     >
                       <td className="py-3 px-1 flex justify-start transition-all duration-300 ease-in-out transform hover:scale-105">
                         <img
-                          src={farmer.image}
-                          alt={farmer.image}
+                          src={product.image}
+                          alt={product.productName}
                           className="h-16 w-16 object-cover rounded-lg shadow-md "
                         />
                       </td>
-                      <td className="py-2 px-1 text-center">{farmer.name}</td>
-                      <td className="py-2 px-1 text-center">{farmer.phone}</td>
                       <td className="py-2 px-1 text-center">
-                        {farmer.village}
+                        {product.productName}
                       </td>
-                      <td className="py-2 px-1 text-center">{farmer.gender}</td>
-                      <td className="py-2 px-1 text-center">
-                        {farmer.username}
-                      </td>
-
-                      <td className="py-2 px-1 text-center">{farmer.email}</td>
+                      <td className="py-2 px-1 text-center">{product.type}</td>
                       <td className="py-2 px-1 ">
                         <div className="flex justify-end gap-4 sm:gap-4 md:gap-7 lg:gap-7">
                           <BiShowAlt
                             className="h-6 w-6 text-purple-500"
                             cursor="pointer"
-                            onClick={() => productDetail(farmer)}
+                            onClick={() => productDetail(product)}
                           />
                           <FaRegEdit
                             className="h-5 w-6 text-blue-500"
-                            onClick={() => toEdit(farmer._id)}
+                            onClick={() => toEdit(product._id)}
                             cursor="pointer"
                           />
                           <MdDelete
                             className="h-5 w-6 text-red-500"
-                            onClick={() => confirmDelete(farmer._id)}
+                            onClick={() => confirmDelete(product._id)}
                             cursor="pointer"
                           />
                         </div>
@@ -194,6 +180,7 @@ const Product_page = () => {
                 </tbody>
               </table>
             )}
+
             <div className="pagination mt-3 flex justify-center md:justify-end items-center ">
               <ReactPaginate
                 previousLabel={"Previous"}
@@ -234,11 +221,11 @@ const Product_page = () => {
             className="deletebox bg-white p-6 rounded-lg shadow-lg"
           >
             <h2 className="text-lg font-semibold mb-4">Confirm Delete</h2>
-            <p>Are you sure you want to delete this farmer?</p>
+            <p>Are you sure you want to delete this product?</p>
             <div className="flex justify-end gap-4 mt-4">
               <button
                 onClick={() => setShowModal(false)}
-                className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-300"
+                className=" bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-300"
               >
                 Cancel
               </button>
@@ -266,34 +253,22 @@ const Product_page = () => {
             className="box sm:w-auto bg-white p-6 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
           >
             <div className="flex justify-between">
-              <h2 className="text-lg font-semibold mb-4 font-serif">Details</h2>
+              <h2 className="text-lg font-semibold mb-4 font-serif">Detail</h2>
               <IoClose
                 onClick={() => setShowDataModal(false)}
                 className="rounded-md h-5 w-5 cursor-pointer"
               />
             </div>
             <img
-              src={selectedFarmer?.image}
+              src={selectedProduct?.image}
               alt=""
-              className="rounded-xl h-40 w-40 object-cover"
+              className="rounded-xl h-60 w-60 object-cover"
             />
             <p className="text-lg pt-3 font-bold font-serif">
-              Name : {selectedFarmer?.name}
+              Name : {selectedProduct?.productName}
             </p>
             <p className="text-lg pt-3 font-bold font-serif">
-              Phone : {selectedFarmer?.phone}
-            </p>
-            <p className="text-lg pt-3 font-bold font-serif">
-              Village : {selectedFarmer?.village}
-            </p>
-            <p className="text-lg pt-3 font-bold font-serif">
-              Gender : {selectedFarmer?.gender}
-            </p>
-            <p className="text-lg pt-3 font-bold font-serif">
-              Username : {selectedFarmer?.username}
-            </p>
-            <p className="text-lg pt-3 font-bold font-serif">
-              Email : {selectedFarmer?.email}
+              Type : {selectedProduct?.type}
             </p>
           </div>
         </div>

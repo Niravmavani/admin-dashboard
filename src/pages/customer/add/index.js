@@ -1,10 +1,10 @@
-import Rpass from "@/components/resetPass/Reset-pass";
+import AddCustomer from "@/components/Customer/AddCustomer/AddCustomer";
 import React from "react";
 
 const index = () => {
   return (
     <div>
-      <Rpass />
+      <AddCustomer />
     </div>
   );
 };
