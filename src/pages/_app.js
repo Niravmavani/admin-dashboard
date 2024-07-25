@@ -8,10 +8,10 @@ export default function App({ Component, pageProps }) {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    console.log("dsfdfs", router.pathname);
+    // console.log("dsfdfs", router.pathname);
     if (
       token &&
-      (router.pathname === "/login" || router.pathname === "/register")
+      (router.pathname === "/login" || router.pathname === "/register" || router.pathname === "/")
     ) {
       router.push("/product");
     }

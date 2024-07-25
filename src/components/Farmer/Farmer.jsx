@@ -12,6 +12,7 @@ import SideNav from "../SideNav/Side_nav";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import ReactPaginate from "react-paginate";
+import { farmerData, farmerDelete } from "@/services/farmer";
 
 const Product_page = () => {
   const [farmer, setFarmer] = useState([]);
@@ -31,51 +32,37 @@ const Product_page = () => {
     router.push(`/farmer/edit/${id}`);
   };
 
+  async function fetchFarmers() {
+    const token = localStorage.getItem("token");
+    try {
+      setLoading(true);
+      const response = await farmerData(token, currentPage, itemsPerPage);
+      setLoading(false);
+      console.log("response", response);
+      setFarmer(response?.data?.items);
+      setCurrentPage(response?.data?.currentPageNumber - 1);
+
+      setTotalPages(response?.data?.totalPages);
+    } catch (error) {
+      setLoading(false);
+      console.log("Error fetching products:", error);
+    }
+  }
   useEffect(() => {
     AOS.init();
     AOS.refresh();
-    async function fetchFarmers() {
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          `https://farmer-api-9a00.onrender.com/farmers?page=${
-            currentPage + 1
-          }&limit=${itemsPerPage}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        setLoading(false);
-        console.log("response", response);
-        setFarmer(response?.data?.items);
-        setCurrentPage(response?.data?.currentPageNumber - 1);
-
-        setTotalPages(response?.data?.totalPages);
-      } catch (error) {
-        setLoading(false);
-        console.log("Error fetching products:", error);
-      }
-    }
 
     fetchFarmers();
   }, [currentPage]);
 
   const handleDelete = async () => {
+    const token = localStorage.getItem("token");
     try {
       setDeleteLoading(true);
-      await axios.delete(
-        `https://farmer-api-9a00.onrender.com/farmers/${farmerToDelete}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      setFarmer((prevFarmers) =>
-        prevFarmers.filter((farmer) => farmer._id !== farmerToDelete)
-      );
+      const response = await farmerDelete(token, farmerToDelete);
+      if (response) {
+        fetchFarmers();
+      }
       setDeleteLoading(false);
       toast.success("Farmer Deleted Successfully");
     } catch (error) {
@@ -131,7 +118,7 @@ const Product_page = () => {
                   width="70px"
                 />
               </div>
-            ) : (
+            ) : farmer?.length !== 0 ? (
               <table className="w-full rtl:text-right whitespace-nowrap">
                 <thead className="bg-gray-200 text-gray-600 uppercase ">
                   <tr className="border-b border-t text-sm sm:text-sm md:text-md lg:text-md">
@@ -193,36 +180,42 @@ const Product_page = () => {
                   ))}
                 </tbody>
               </table>
+            ) : (
+              <div className="w-full flex h-[50vh] pt-8 justify-center text-lg">
+                No Data found.
+              </div>
             )}
-            <div className="pagination mt-3 flex justify-center md:justify-end items-center ">
-              <ReactPaginate
-                previousLabel={"Previous"}
-                nextLabel={"Next"}
-                breakLabel={"..."}
-                breakClassName={"break-me"}
-                pageCount={totalPages}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={5}
-                onPageChange={handlePageClick}
-                containerClassName={
-                  "flex justify-center items-center space-x-2"
-                }
-                activeClassName={
-                  "bg-blue-500 text-white border border-blue-500 rounded px-3 sm:px-4 py-1 sm:py-2"
-                }
-                previousClassName={
-                  "bg-white border border-gray-300 rounded pagi px-3 sm:px-4 py-1 sm:py-2 hover:bg-gray-100"
-                }
-                nextClassName={
-                  "bg-white border border-gray-300 rounded px-3 sm:px-4 py-1 sm:py-2 hover:bg-gray-100"
-                }
-                disabledClassName={"cursor-not-allowed"}
-                pageClassName={
-                  "px-3 sm:px-4 py-1 sm:py-2 border border-gray-300 rounded hover:bg-gray-100"
-                }
-                pageLinkClassName={"flex items-center justify-center"}
-              />
-            </div>
+            {farmer?.length !== 0 && (
+              <div className="pagination mt-3 flex justify-center md:justify-end items-center ">
+                <ReactPaginate
+                  previousLabel={"Previous"}
+                  nextLabel={"Next"}
+                  breakLabel={"..."}
+                  breakClassName={"break-me"}
+                  pageCount={totalPages}
+                  marginPagesDisplayed={2}
+                  pageRangeDisplayed={5}
+                  onPageChange={handlePageClick}
+                  containerClassName={
+                    "flex justify-center items-center space-x-2"
+                  }
+                  activeClassName={
+                    "bg-blue-500 text-white border border-blue-500 rounded px-3 sm:px-4 py-1 sm:py-2"
+                  }
+                  previousClassName={
+                    "bg-white border border-gray-300 rounded pagi px-3 sm:px-4 py-1 sm:py-2 hover:bg-gray-100"
+                  }
+                  nextClassName={
+                    "bg-white border border-gray-300 rounded px-3 sm:px-4 py-1 sm:py-2 hover:bg-gray-100"
+                  }
+                  disabledClassName={"cursor-not-allowed"}
+                  pageClassName={
+                    "px-3 sm:px-4 py-1 sm:py-2 border border-gray-300 rounded hover:bg-gray-100"
+                  }
+                  pageLinkClassName={"flex items-center justify-center"}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -6,6 +6,7 @@ import { TailSpin } from "react-loader-spinner";
 import { toast } from "react-toastify";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { customerDataById, editCustomer } from "@/services/customer";
 
 const EditCustomer = () => {
   const router = useRouter();
@@ -69,25 +70,20 @@ const EditCustomer = () => {
     AOS.init();
     AOS.refresh();
     if (customerId) {
-      fetchProductDetails(customerId);
+      fetchCustomerDetails(customerId);
     }
   }, [customerId]);
 
-  async function fetchProductDetails(id) {
+  async function fetchCustomerDetails(id) {
+    const token = localStorage.getItem("token");
     try {
       setLoading(true);
-      const response = await axios.get(
-        `https://farmer-api-9a00.onrender.com/customers/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await customerDataById(token, id);
       setLoading(false);
       console.log("response", response);
       setCustomer(response?.data);
       setImgPreview(response?.data?.image);
+      setPimage(response?.data?.image);
     } catch (error) {
       console.log(error?.data?.message);
       setLoading(false);
@@ -105,26 +101,22 @@ const EditCustomer = () => {
 
   async function handleFormSubmit(e) {
     e.preventDefault();
+    const token = localStorage.getItem("token");
     try {
       setButtonLoading(true);
-      const response = await axios.patch(
-        `https://farmer-api-9a00.onrender.com/customers/${customerId}`,
-        {
-          name: customer.name,
-          phone: customer.phone,
-          village: customer.village,
-          gender: customer.gender,
-          username: customer.username,
-          email: customer.email,
-          remarks: customer.remarks,
-          image: Pimage,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+
+      const payload = {
+        name: customer.name,
+        phone: customer.phone,
+        village: customer.village,
+        gender: customer.gender,
+        username: customer.username,
+        email: customer.email,
+        remarks: customer.remarks,
+        image: Pimage,
+      };
+
+      const response = await editCustomer(token, customerId, payload);
       setButtonLoading(false);
 
       router.push("/customer");

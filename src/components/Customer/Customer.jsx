@@ -12,6 +12,7 @@ import SideNav from "../SideNav/Side_nav";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import ReactPaginate from "react-paginate";
+import { customerData, customerDelete } from "../../services/customer";
 
 const Customer = () => {
   const [customer, setCustomer] = useState([]);
@@ -30,52 +31,39 @@ const Customer = () => {
   const toEdit = (id) => {
     router.push(`/customer/edit/${id}`);
   };
+  async function fetchCustomer() {
+    const token = localStorage.getItem("token");
+    try {
+      setLoading(true);
+      const response = await customerData(token, currentPage, itemsPerPage);
 
+      setLoading(false);
+      console.log("response", response);
+      setCustomer(response?.data?.items);
+      setCurrentPage(response?.data?.currentPageNumber - 1);
+
+      setTotalPages(response?.data?.totalPages);
+    } catch (error) {
+      setLoading(false);
+      console.log("Error fetching products:", error);
+    }
+  }
   useEffect(() => {
     AOS.init();
     AOS.refresh();
-    async function fetchCustomer() {
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          `https://farmer-api-9a00.onrender.com/customers?page=${
-            currentPage + 1
-          }&limit=${itemsPerPage}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        setLoading(false);
-        console.log("response", response);
-        setCustomer(response?.data?.items);
-        setCurrentPage(response?.data?.currentPageNumber - 1);
-
-        setTotalPages(response?.data?.totalPages);
-      } catch (error) {
-        setLoading(false);
-        console.log("Error fetching products:", error);
-      }
-    }
 
     fetchCustomer();
-  }, []);
+  }, [currentPage]);
 
   const handleDelete = async () => {
+    const token = localStorage.getItem("token");
+
     try {
       setDeleteLoading(true);
-      await axios.delete(
-        `https://farmer-api-9a00.onrender.com/customers/${customerToDelete}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      setCustomer((prevCustomers) =>
-        prevCustomers.filter((customer) => customer._id !== customerToDelete)
-      );
+      const responce = await customerDelete(token, customerToDelete);
+      if (responce) {
+        fetchCustomer();
+      }
       setDeleteLoading(false);
       toast.success("Customer Deleted Successfully");
     } catch (error) {
@@ -131,7 +119,7 @@ const Customer = () => {
                   width="70px"
                 />
               </div>
-            ) : (
+            ) : customer?.length !== 0 ? (
               <table className="w-full rtl:text-right whitespace-nowrap">
                 <thead className="bg-gray-200 text-gray-600 uppercase ">
                   <tr className="border-b border-t text-sm sm:text-sm md:text-md lg:text-md">
@@ -157,7 +145,7 @@ const Customer = () => {
                         <img
                           src={customer.image}
                           alt={customer.image}
-                          className="h-16 w-16 object-cover rounded-full shadow-md "
+                          className="h-16 w-16 object-cover rounded-lg shadow-md "
                         />
                       </td>
                       <td className="py-2 px-1 text-center">{customer.name}</td>
@@ -203,36 +191,42 @@ const Customer = () => {
                   ))}
                 </tbody>
               </table>
+            ) : (
+              <div className="w-full flex h-[50vh] pt-8 justify-center text-lg">
+                No Data found.
+              </div>
             )}
-            <div className="pagination mt-3 flex justify-center md:justify-end items-center ">
-              <ReactPaginate
-                previousLabel={"Previous"}
-                nextLabel={"Next"}
-                breakLabel={"..."}
-                breakClassName={"break-me"}
-                pageCount={totalPages}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={5}
-                onPageChange={handlePageClick}
-                containerClassName={
-                  "flex justify-center items-center space-x-2"
-                }
-                activeClassName={
-                  "bg-blue-500 text-white border border-blue-500 rounded px-3 sm:px-4 py-1 sm:py-2"
-                }
-                previousClassName={
-                  "bg-white border border-gray-300 rounded pagi px-3 sm:px-4 py-1 sm:py-2 hover:bg-gray-100"
-                }
-                nextClassName={
-                  "bg-white border border-gray-300 rounded px-3 sm:px-4 py-1 sm:py-2 hover:bg-gray-100"
-                }
-                disabledClassName={"cursor-not-allowed"}
-                pageClassName={
-                  "px-3 sm:px-4 py-1 sm:py-2 border border-gray-300 rounded hover:bg-gray-100"
-                }
-                pageLinkClassName={"flex items-center justify-center"}
-              />
-            </div>
+            {customer?.length !== 0 && (
+              <div className="pagination mt-3 flex justify-center md:justify-end items-center ">
+                <ReactPaginate
+                  previousLabel={"Previous"}
+                  nextLabel={"Next"}
+                  breakLabel={"..."}
+                  breakClassName={"break-me"}
+                  pageCount={totalPages}
+                  marginPagesDisplayed={2}
+                  pageRangeDisplayed={5}
+                  onPageChange={handlePageClick}
+                  containerClassName={
+                    "flex justify-center items-center space-x-2"
+                  }
+                  activeClassName={
+                    "bg-blue-500 text-white border border-blue-500 rounded px-3 sm:px-4 py-1 sm:py-2"
+                  }
+                  previousClassName={
+                    "bg-white border border-gray-300 rounded pagi px-3 sm:px-4 py-1 sm:py-2 hover:bg-gray-100"
+                  }
+                  nextClassName={
+                    "bg-white border border-gray-300 rounded px-3 sm:px-4 py-1 sm:py-2 hover:bg-gray-100"
+                  }
+                  disabledClassName={"cursor-not-allowed"}
+                  pageClassName={
+                    "px-3 sm:px-4 py-1 sm:py-2 border border-gray-300 rounded hover:bg-gray-100"
+                  }
+                  pageLinkClassName={"flex items-center justify-center"}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

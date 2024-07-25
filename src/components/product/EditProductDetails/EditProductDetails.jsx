@@ -6,6 +6,7 @@ import { TailSpin } from "react-loader-spinner";
 import { toast } from "react-toastify";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { editProduct, productDataById } from "@/services/product";
 
 const EditProductDetails = () => {
   const router = useRouter();
@@ -69,20 +70,16 @@ const EditProductDetails = () => {
   }, [productId]);
 
   async function fetchProductDetails(id) {
+    const token = localStorage.getItem("token");
+
     try {
       setLoading(true);
-      const response = await axios.get(
-        `https://farmer-api-9a00.onrender.com/products/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await productDataById(token, id);
       setLoading(false);
       console.log("response", response);
       setProduct(response?.data);
       setImgPreview(response?.data?.image);
+      setPimage(response?.data?.image);
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -99,18 +96,16 @@ const EditProductDetails = () => {
   };
 
   async function handleFormSubmit(e) {
+    const token = localStorage.getItem("token");
     e.preventDefault();
     try {
+      const payload = {
+        productName: product.productName,
+        type: product.type,
+        image: Pimage,
+      };
       setButtonLoading(true);
-      const response = await axios.patch(
-        `https://farmer-api-9a00.onrender.com/products/${productId}`,
-        { productName: product.productName, type: product.type, image: Pimage },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await editProduct(payload, token, productId);
       setButtonLoading(false);
 
       router.push("/product");

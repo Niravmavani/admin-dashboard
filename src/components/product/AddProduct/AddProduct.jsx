@@ -6,6 +6,7 @@ import { TailSpin } from "react-loader-spinner";
 import { useRouter } from "next/router";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { createProductData } from "@/services/product";
 
 const AddProduct = () => {
   const router = useRouter();
@@ -43,16 +44,13 @@ const AddProduct = () => {
           const validImageTypes = ["image/jpeg", "image/jpg", "image/png"];
 
           if (!validImageTypes.includes(fileType)) {
-            
             toast.error("Only JPG, JPEG, and PNG formats are allowed.");
             return;
           }
 
           setImgFile(e.target.files[0]);
           setImgPreview(URL.createObjectURL(e.target.files[0]));
-          
         } else {
-         
           setImgPreview(null);
         }
         setPimage(response?.data?.url);
@@ -64,30 +62,29 @@ const AddProduct = () => {
   };
 
   async function productAdd(e) {
+    const token = localStorage.getItem("token");
     e.preventDefault();
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "https://farmer-api-9a00.onrender.com/products",
-        {
-          image: Pimage,
-          productName: pname,
-          type: ptype,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const payload = {
+        image: Pimage,
+        productName: pname,
+        type: ptype,
+      };
+
+      const response = await createProductData(token, payload);
       console.log(response);
       toast.success(response?.data?.message);
       router.push("/product");
       setLoading(false);
     } catch (error) {
       console.log(error);
-      toast.error(error.message);
+      toast.error(
+        error?.response?.data?.message?.length
+          ? error?.response?.data?.message[0]
+          : error?.response?.data?.message
+      );
       setLoading(false);
     }
   }

@@ -1,9 +1,0 @@
-{
-  "projects": {
-    "default": "farmer-f64aa",
-    "stading": "farmer-f64aa"
-  },
-  "targets": {},
-  "etags": {},
-  "dataconnectEmulatorConfig": {}
-}

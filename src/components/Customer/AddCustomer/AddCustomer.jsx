@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { TailSpin } from "react-loader-spinner";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { createCustomerData } from "../../../services/customer";
 
 const AddCustomer = () => {
   const [fname, setFname] = useState("");
@@ -66,28 +67,22 @@ const AddCustomer = () => {
   };
 
   async function customerAdd(e) {
+    const token = localStorage.getItem("token");
     e.preventDefault();
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "https://farmer-api-9a00.onrender.com/customers",
-        {
-          name: fname,
-          phone: phone,
-          village: village,
-          gender: gender,
-          username: username,
-          image: Pimage,
-          email: email,
-          remarks: remarks,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const payload = {
+        name: fname,
+        phone: phone,
+        village: village,
+        gender: gender,
+        username: username,
+        image: Pimage,
+        email: email,
+        remarks: remarks,
+      };
+      const response = await createCustomerData(token, payload);
       console.log(response);
       toast.success(response?.data?.message);
       setLoading(false);
@@ -95,7 +90,11 @@ const AddCustomer = () => {
     } catch (error) {
       console.log(error);
       setLoading(false);
-      toast.error(error?.message);
+      toast.error(
+        error?.response?.data?.message?.length
+          ? error?.response?.data?.message[0]
+          : error?.response?.data?.message
+      );
     }
   }
   return (

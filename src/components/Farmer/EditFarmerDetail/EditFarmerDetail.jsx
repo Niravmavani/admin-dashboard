@@ -6,6 +6,7 @@ import { TailSpin } from "react-loader-spinner";
 import { toast } from "react-toastify";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { editFarmer, farmerDataById } from "@/services/farmer";
 
 const EditFarmerDetail = () => {
   const router = useRouter();
@@ -32,7 +33,7 @@ const EditFarmerDetail = () => {
     AOS.init();
     AOS.refresh();
     if (farmerId) {
-      fetchProductDetails(farmerId);
+      fetchFarmerDetails(farmerId);
     }
   }, [farmerId]);
 
@@ -73,21 +74,16 @@ const EditFarmerDetail = () => {
     setimgLoading(false);
   };
 
-  async function fetchProductDetails(id) {
+  async function fetchFarmerDetails(id) {
+    const token = localStorage.getItem("token");
     try {
       setLoading(true);
-      const response = await axios.get(
-        `https://farmer-api-9a00.onrender.com/farmers/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await farmerDataById(token, id);
       setLoading(false);
       console.log("response", response);
       setFarmer(response?.data);
       setImgPreview(response?.data?.image);
+      setPimage(response?.data?.image);
     } catch (error) {
       console.log(error?.data?.message);
       setLoading(false);
@@ -104,28 +100,22 @@ const EditFarmerDetail = () => {
   };
 
   async function handleFormSubmit(e) {
+    const token = localStorage.getItem("token");
+
     e.preventDefault();
     try {
+      const payload = {
+        name: farmer.name,
+        phone: farmer.phone,
+        village: farmer.village,
+        gender: farmer.gender,
+        username: farmer.username,
+        email: farmer.email,
+        image: Pimage,
+      };
       setButtonLoading(true);
-      const response = await axios.patch(
-        `https://farmer-api-9a00.onrender.com/farmers/${farmerId}`,
-        {
-          name: farmer.name,
-          phone: farmer.phone,
-          village: farmer.village,
-          gender: farmer.gender,
-          username: farmer.username,
-          email: farmer.email,
-          image: Pimage,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await editFarmer(token, farmerId, payload);
       setButtonLoading(false);
-
       router.push("/farmer");
       console.log(response);
       toast.success(response?.data?.message);

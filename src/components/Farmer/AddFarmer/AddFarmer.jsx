@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { TailSpin } from "react-loader-spinner";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { createFarmerData } from "@/services/farmer";
 
 const AddFarmer = () => {
   const [fname, setFname] = useState("");
@@ -47,16 +48,13 @@ const AddFarmer = () => {
           const validImageTypes = ["image/jpeg", "image/jpg", "image/png"];
 
           if (!validImageTypes.includes(fileType)) {
-            
             toast.error("Only JPG, JPEG, and PNG formats are allowed.");
             return;
           }
 
           setImgFile(e.target.files[0]);
           setImgPreview(URL.createObjectURL(e.target.files[0]));
-          
         } else {
-         
           setImgPreview(null);
         }
         setPimage(response?.data?.url);
@@ -68,27 +66,22 @@ const AddFarmer = () => {
   };
 
   async function farmerAdd(e) {
+    const token = localStorage.getItem("token");
+
     e.preventDefault();
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "https://farmer-api-9a00.onrender.com/farmers",
-        {
-          name: fname,
-          phone: phone,
-          village: village,
-          gender: gender,
-          username: username,
-          image:Pimage,
-          email: email,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const payload = {
+        name: fname,
+        phone: phone,
+        village: village,
+        gender: gender,
+        username: username,
+        image: Pimage,
+        email: email,
+      };
+      const response = await createFarmerData(token, payload);
       console.log(response);
       toast.success(response?.data?.message);
       setLoading(false);
@@ -96,7 +89,11 @@ const AddFarmer = () => {
     } catch (error) {
       console.log(error);
       setLoading(false);
-      toast.error(error?.data?.message);
+      toast.error(
+        error?.response?.data?.message?.length
+          ? error?.response?.data?.message[0]
+          : error?.response?.data?.message
+      );
     }
   }
   return (
