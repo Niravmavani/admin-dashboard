@@ -6,7 +6,13 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
-
+  // const data = [
+  //   "/forgot-password",
+  //   "/otp-verification",
+  //   "/new-password",
+  //   "/password-otp",
+  //   "/register",
+  // ];
   useEffect(() => {
     const token = localStorage.getItem("token");
     // console.log("dsfdfs", router.pathname);
@@ -17,10 +23,10 @@ export default function App({ Component, pageProps }) {
         router.pathname === "/")
     ) {
       router.push("/product");
-    } else {
-      if (!token) {
-        router.push("/login");
-      }
+      // } else {
+      //   if (!token && !data.includes(router.pathname)) {
+      //     router.push("/login");
+      //   }
     }
   }, [router]);
   return (
