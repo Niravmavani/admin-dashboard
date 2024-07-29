@@ -343,7 +343,7 @@ const Product_page = () => {
         <div className="md:ml-[199px] ml-[75px] fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50  ">
           <div
             data-aos="flip-left"
-            className="box sm:w-auto bg-white p-6 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+            className="box break-words sm:w-auto bg-white p-6 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
           >
             <div className="flex justify-between">
               <h2 className="text-lg font-semibold mb-4 font-serif">Details</h2>
@@ -354,7 +354,7 @@ const Product_page = () => {
             </div>
             <img
               src={selectedFarmer?.image}
-              alt=""
+              alt={selectedFarmer?.name}
               className="rounded-xl h-40 w-40 object-cover"
             />
             <p className="text-lg pt-3 font-bold font-serif">
