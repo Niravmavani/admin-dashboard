@@ -2,11 +2,13 @@ import axios from "axios";
 import Side_nav from "../../SideNav/Side_nav";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { TailSpin } from "react-loader-spinner";
+
 import { useRouter } from "next/router";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { createProductData } from "@/services/product";
+
+import Miniloader from "@/components/Loader/miniloader";
 
 const AddProduct = () => {
   const router = useRouter();
@@ -93,7 +95,7 @@ const AddProduct = () => {
     <div className="flex">
       <Side_nav />
       <div
-        data-aos="fade-left"
+        data-aos="fade-right"
         className="bg-gray-100 h-screen ml-[75px] md:ml-[180px] w-full overflow-x-hidden"
       >
         <div className="sm:ml-6 pl-5 sm:pl-0 md:pl-6 pt-5 sm:text-xl text-sm md:text-2xl lg:text-2xl">
@@ -107,9 +109,7 @@ const AddProduct = () => {
                 <label htmlFor="image">Image</label>
                 <div className="col-span-2 flex flex-col items-center gap-4 @xl:flex-row">
                   <div className="relative">
-                    {imgloading && (
-                      <TailSpin height="25" width="25" color="black" />
-                    )}
+                    {imgloading && <Miniloader color={"#228B22"} />}
                     {imgPreview ? (
                       <>
                         <img
@@ -189,7 +189,7 @@ const AddProduct = () => {
                   name="productname"
                   id="productname"
                   placeholder="Enter Product Name"
-                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-blue-600 mb-3"
+                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
                   onChange={(e) => setPname(e.target.value)}
                 />
                 <label htmlFor="type">Type</label>
@@ -198,19 +198,15 @@ const AddProduct = () => {
                   name="type"
                   id="type"
                   placeholder="Enter Type"
-                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-blue-600 mb-3"
+                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
                   onChange={(e) => setPtype(e.target.value)}
                 />
                 <button
                   type="submit"
-                  className="bg-blue-500 w-24 py-2 px-3 rounded-md text-white hover:bg-blue-700 flex justify-center items-center"
+                  className="bg-green-500 w-24 py-2 px-3 rounded-md text-white hover:bg-green-700 flex justify-center items-center"
                   disabled={loading}
                 >
-                  {loading ? (
-                    <TailSpin height="25" width="25" color="white" />
-                  ) : (
-                    "Submit"
-                  )}
+                  {loading ? <Miniloader color={"white"} /> : "Submit"}
                 </button>
               </form>
             </div>

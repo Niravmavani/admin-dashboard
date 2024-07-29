@@ -6,24 +6,27 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { editProduct, productDataById } from "@/services/product";
+import { expenseDataById, editExpense } from "@/services/expense";
 import Bigloader from "@/components/Loader/bigloader";
 import Miniloader from "@/components/Loader/miniloader";
 
-const EditProductDetails = () => {
+const EditExpense = () => {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [buttonloading, setButtonLoading] = useState(false);
+  const expenseId = router.query.index;
   const [Pimage, setPimage] = useState("");
   const [imgFile, setImgFile] = useState(null);
   const [imgPreview, setImgPreview] = useState(null);
   const [imgloading, setimgLoading] = useState(false);
-  const { productId } = router.query;
+  const [loading, setLoading] = useState(false);
+  const [buttonloading, setButtonLoading] = useState(false);
 
-  const [product, setProduct] = useState({
+  const [expense, setExpense] = useState({
+    name: "",
+    phone: "",
+
     image: "",
-    productName: "",
-    type: "",
+
+    remarks: "",
   });
 
   const upload = async (e) => {
@@ -66,24 +69,23 @@ const EditProductDetails = () => {
   useEffect(() => {
     AOS.init();
     AOS.refresh();
-    if (productId) {
-      fetchProductDetails(productId);
+    if (expenseId) {
+      fetchExpenseDetails(expenseId);
     }
-  }, [productId]);
+  }, [expenseId]);
 
-  async function fetchProductDetails(id) {
+  async function fetchExpenseDetails(id) {
     const token = localStorage.getItem("token");
-
     try {
       setLoading(true);
-      const response = await productDataById(token, id);
+      const response = await expenseDataById(token, id);
       setLoading(false);
       console.log("response", response);
-      setProduct(response?.data);
+      setExpense(response?.data);
       setImgPreview(response?.data?.image);
       setPimage(response?.data?.image);
     } catch (error) {
-      console.log(error);
+      console.log(error?.data?.message);
       setLoading(false);
     }
   }
@@ -91,33 +93,37 @@ const EditProductDetails = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setProduct((prevProduct) => ({
-      ...prevProduct,
+    setExpense((prevExpense) => ({
+      ...prevExpense,
       [name]: value,
     }));
   };
 
   async function handleFormSubmit(e) {
-    const token = localStorage.getItem("token");
     e.preventDefault();
+    const token = localStorage.getItem("token");
     try {
+      setButtonLoading(true);
+
       const payload = {
-        productName: product.productName,
-        type: product.type,
+        name: expense.name,
+        phone: expense.phone,
+        village: expense.village,
+
+        remarks: expense.remarks,
         image: Pimage,
       };
-      setButtonLoading(true);
-      const response = await editProduct(payload, token, productId);
+
+      const response = await editExpense(token, expenseId, payload);
       setButtonLoading(false);
 
-      router.push("/product");
+      router.push("/expense");
       console.log(response);
       toast.success(response?.data?.message);
     } catch (error) {
       setButtonLoading(false);
-
       console.log(error);
-      toast.error(error?.response?.data?.message[0]);
+      toast.error(error?.message);
     }
   }
   return (
@@ -128,7 +134,7 @@ const EditProductDetails = () => {
         className="bg-gray-100 ml-[75px]  min-h-screen  md:ml-[180px]  w-full overflow-x-hidden"
       >
         <div className="text-md font-bold text-gray-800 sm:ml-6 pl-5 sm:pl-0 md:pl-6  pt-5  sm:text-xl text-md md:text-2xl lg:text-2xl">
-          Edit Product
+          Edit Expense
         </div>
         {loading ? (
           <div className="flex justify-center pt-4">
@@ -139,7 +145,7 @@ const EditProductDetails = () => {
             <div className="rounded-md  bg-white  w-full ">
               <div className="pb-5 sm:pb-8  border rounded-md p-2 sm:p-10 md:p-10 lg:p-10 shadow-lg lg:w-[670px] md:w-[500px] sm:w-[570px] w-[210px] ">
                 <form onSubmit={handleFormSubmit}>
-                  <label htmlFor="">Product Image</label>
+                  <label htmlFor="">Image</label>
 
                   <div className="col-span-2 flex flex-col items-center gap-4 @xl:flex-row">
                     <div className="relative">
@@ -217,24 +223,38 @@ const EditProductDetails = () => {
                     </div>
                   </div>
 
-                  <label htmlFor="name">Product Name</label>
+                  <label htmlFor="name">Name</label>
                   <input
                     type="text"
-                    name="productName"
+                    name="name"
                     id="name"
-                    value={product.productName}
-                    className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-blue-600 mb-3"
+                    value={expense.name}
+                    placeholder="Enter Expense  Name"
+                    className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-blue-600 mb-3"
                     onChange={handleChange}
                   />
-                  <label htmlFor="type">Product Type</label>
+                  <label htmlFor="phone">Phone Number</label>
                   <input
                     type="text"
-                    name="type"
-                    id="type"
-                    value={product.type}
-                    className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-blue-600 mb-3"
+                    name="phone"
+                    id="phone"
+                    value={expense.phone}
+                    placeholder="Enter Phone Number"
+                    className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-blue-600 mb-3"
                     onChange={handleChange}
                   />
+
+                  <label htmlFor="email">Remarks</label>
+                  <input
+                    type="text"
+                    name="remarks"
+                    id="remarks"
+                    value={expense.remarks}
+                    placeholder="Enter Remarks"
+                    className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-blue-600 mb-3"
+                    onChange={handleChange}
+                  />
+
                   <button
                     type="submit"
                     className="bg-blue-500 w-24 py-2 px-3 rounded-md text-white hover:bg-blue-700 flex justify-center items-center"
@@ -252,4 +272,4 @@ const EditProductDetails = () => {
   );
 };
 
-export default EditProductDetails;
+export default EditExpense;

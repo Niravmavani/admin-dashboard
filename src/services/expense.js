@@ -2,9 +2,9 @@ import axios from "axios";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 // create customer
-const createCustomerData = (token, payload) => {
+const createExpenseData = (token, payload) => {
   return axios({
-    url: `${BASE_URL}/customers`,
+    url: `${BASE_URL}/expense-masters`,
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -15,8 +15,8 @@ const createCustomerData = (token, payload) => {
 };
 
 // get all customer
-const customerData = (token, currentPage, itemsPerPage, searchResult) => {
-  let url = `${BASE_URL}/customers?page=${
+const expenseData = (token, currentPage, itemsPerPage, searchResult) => {
+  let url = `${BASE_URL}/expense-masters?page=${
     currentPage + 1
   }&limit=${itemsPerPage}`;
   if (searchResult !== "") {
@@ -33,9 +33,9 @@ const customerData = (token, currentPage, itemsPerPage, searchResult) => {
 };
 
 // get customer by id
-const customerDataById = (token, id) => {
+const expenseDataById = (token, id) => {
   return axios({
-    url: `${BASE_URL}/customers/${id}`,
+    url: `${BASE_URL}/expense-masters/${id}`,
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -45,9 +45,9 @@ const customerDataById = (token, id) => {
 };
 
 // customer delete
-const customerDelete = (token, customerToDelete) => {
+const expenseDelete = (token, expenseToDelete) => {
   return axios({
-    url: `${BASE_URL}/customers/${customerToDelete}`,
+    url: `${BASE_URL}/expense-masters/${expenseToDelete}`,
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -57,9 +57,9 @@ const customerDelete = (token, customerToDelete) => {
 };
 
 //edit customer
-const editCustomer = (token, customerId, payload) => {
+const editExpense = (token, expenseId, payload) => {
   return axios({
-    url: `${BASE_URL}/customers/${customerId}`,
+    url: `${BASE_URL}/expense-masters/${expenseId}`,
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -69,9 +69,9 @@ const editCustomer = (token, customerId, payload) => {
 };
 
 export {
-  customerData,
-  createCustomerData,
-  customerDataById,
-  editCustomer,
-  customerDelete,
+  expenseData,
+  createExpenseData,
+  expenseDataById,
+  editExpense,
+  expenseDelete,
 };

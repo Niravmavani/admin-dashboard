@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import SideNav from "../../SideNav/Side_nav";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { TailSpin } from "react-loader-spinner";
+
 import { toast } from "react-toastify";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { editFarmer, farmerDataById } from "@/services/farmer";
+import Bigloader from "@/components/Loader/bigloader";
+import Miniloader from "@/components/Loader/miniloader";
 
 const EditFarmerDetail = () => {
   const router = useRouter();
@@ -137,7 +139,7 @@ const EditFarmerDetail = () => {
         </div>
         {loading ? (
           <div className="flex justify-center pt-4">
-            <TailSpin color="#4486f3" height="70px" width="70px" />
+            <Bigloader color={"#228B22"} />
           </div>
         ) : (
           <div className=" sm:p-5 p-0  grid justify-center items-center">
@@ -148,9 +150,7 @@ const EditFarmerDetail = () => {
 
                   <div className="col-span-2 flex flex-col items-center gap-4 @xl:flex-row">
                     <div className="relative">
-                      {imgloading && (
-                        <TailSpin height="25" width="25" color="black" />
-                      )}
+                      {imgloading && <Miniloader color={"green"} />}
                       {imgPreview ? (
                         <>
                           <img
@@ -231,7 +231,7 @@ const EditFarmerDetail = () => {
                     id="name"
                     value={farmer.name}
                     placeholder="Enter Product Name"
-                    className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-blue-600 mb-3"
+                    className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
                     onChange={handleChange}
                   />
                   <label htmlFor="phone">Phone Number</label>
@@ -241,7 +241,7 @@ const EditFarmerDetail = () => {
                     id="phone"
                     value={farmer.phone}
                     placeholder="Enter Phone Number"
-                    className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-blue-600 mb-3"
+                    className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
                     onChange={handleChange}
                   />
                   <label htmlFor="village">Village</label>
@@ -251,7 +251,7 @@ const EditFarmerDetail = () => {
                     id="village"
                     value={farmer.village}
                     placeholder="Enter Village"
-                    className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-blue-600 mb-3"
+                    className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
                     onChange={handleChange}
                   />
                   <label htmlFor="gender">Gender</label>
@@ -261,7 +261,7 @@ const EditFarmerDetail = () => {
                     id="gender"
                     value={farmer.gender}
                     placeholder="Enter Gender"
-                    className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-blue-600 mb-3"
+                    className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
                     onChange={handleChange}
                   />
                   <label htmlFor="username">Username</label>
@@ -271,7 +271,7 @@ const EditFarmerDetail = () => {
                     id="username"
                     value={farmer.username}
                     placeholder="Enter Username"
-                    className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-blue-600 mb-3"
+                    className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
                     onChange={handleChange}
                   />
                   <label htmlFor="email">Email</label>
@@ -281,20 +281,16 @@ const EditFarmerDetail = () => {
                     id="email"
                     value={farmer.email}
                     placeholder="Enter Email"
-                    className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-blue-600 mb-3"
+                    className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
                     onChange={handleChange}
                   />
 
                   <button
                     type="submit"
-                    className="bg-blue-500 w-24 py-2 px-3 rounded-md text-white hover:bg-blue-700 flex justify-center items-center"
+                    className="bg-green-500 w-24 py-2 px-3 rounded-md text-white hover:bg-green-700 flex justify-center items-center"
                     disabled={loading}
                   >
-                    {buttonloading ? (
-                      <TailSpin height="25" width="25" color="white" />
-                    ) : (
-                      "Submit"
-                    )}
+                    {buttonloading ? <Miniloader color={"white"} /> : "Submit"}
                   </button>
                 </form>
               </div>

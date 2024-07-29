@@ -6,20 +6,17 @@ import { useRouter } from "next/router";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { createFarmerData } from "@/services/farmer";
+import { createExpenseData } from "../../../services/expense";
 import Miniloader from "@/components/Loader/miniloader";
 
-const AddFarmer = () => {
+const AddExpense = () => {
   const [fname, setFname] = useState("");
   const [phone, setPhone] = useState("");
-  const [village, setVillage] = useState("");
-  const [gender, setGender] = useState("");
-  const [username, setUsername] = useState("");
-  const [imgFile, setImgFile] = useState(null);
+  const [remarks, setRemarks] = useState("");
   const [Pimage, setPimage] = useState("");
+  const [imgFile, setImgFile] = useState(null);
   const [imgPreview, setImgPreview] = useState(null);
   const [imgloading, setimgLoading] = useState(false);
-  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -66,9 +63,8 @@ const AddFarmer = () => {
     setimgLoading(false);
   };
 
-  async function farmerAdd(e) {
+  async function expenseAdd(e) {
     const token = localStorage.getItem("token");
-
     e.preventDefault();
     setLoading(true);
 
@@ -76,17 +72,16 @@ const AddFarmer = () => {
       const payload = {
         name: fname,
         phone: phone,
-        village: village,
-        gender: gender,
-        username: username,
+
         image: Pimage,
-        email: email,
+
+        remarks: remarks,
       };
-      const response = await createFarmerData(token, payload);
+      const response = await createExpenseData(token, payload);
       console.log(response);
       toast.success(response?.data?.message);
       setLoading(false);
-      router.push("/farmer");
+      router.push("/expense");
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -105,13 +100,13 @@ const AddFarmer = () => {
         className="bg-gray-100 ml-[75px] md:ml-[180px] w-full overflow-x-hidden"
       >
         <div className="sm:ml-6 pl-5 sm:pl-0 md:pl-6 pt-5 sm:text-xl text-sm md:text-2xl lg:text-2xl">
-          Add Farmer
+          Add Expense
         </div>
 
         <div className="sm:p-5 p-0 grid justify-center">
-          <div className="rounded-md  bg-white  w-full">
+          <div className="rounded-md  bg-white w-full">
             <div className="pb-5 sm:pb-8 border rounded-md p-2 sm:p-10 md:p-10 lg:p-10 shadow-lg lg:w-[670px] md:w-[500px] sm:w-[570px] w-[210px]">
-              <form onSubmit={farmerAdd}>
+              <form onSubmit={expenseAdd}>
                 <label htmlFor="image">Image</label>
                 <div className="col-span-2 flex flex-col items-center gap-4 @xl:flex-row">
                   <div className="relative">
@@ -189,12 +184,12 @@ const AddFarmer = () => {
                     )}
                   </div>
                 </div>
-                <label htmlFor="farmername">Farmer Name</label>
+                <label htmlFor="name">Name</label>
                 <input
                   type="text"
-                  name="farmername"
-                  id="farmername"
-                  placeholder="Enter Product Name"
+                  name="name"
+                  id="name"
+                  placeholder="Enter Expense Name"
                   className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
                   onChange={(e) => setFname(e.target.value)}
                 />
@@ -207,42 +202,15 @@ const AddFarmer = () => {
                   className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
                   onChange={(e) => setPhone(e.target.value)}
                 />
-                <label htmlFor="village">Village</label>
-                <input
-                  type="text"
-                  name="village"
-                  id="village"
-                  placeholder="Enter Village"
-                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
-                  onChange={(e) => setVillage(e.target.value)}
-                />
-                <label htmlFor="gender">Gender</label>
-                <input
-                  type="text"
-                  name="gender"
-                  id="gender"
-                  placeholder="Enter Gender"
-                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
-                  onChange={(e) => setGender(e.target.value)}
-                />
-                <label htmlFor="username">Username</label>
-                <input
-                  type="text"
-                  name="username"
-                  id="username"
-                  placeholder="Enter Username"
-                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
-                  onChange={(e) => setUsername(e.target.value)}
-                />
 
-                <label htmlFor="email">Email</label>
+                <label htmlFor="remarks">Remarks</label>
                 <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  placeholder="Enter Email"
+                  type="text"
+                  name="remarks"
+                  id="remarks"
+                  placeholder="Enter Remarks"
                   className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => setRemarks(e.target.value)}
                 />
 
                 <button
@@ -261,4 +229,4 @@ const AddFarmer = () => {
   );
 };
 
-export default AddFarmer;
+export default AddExpense;

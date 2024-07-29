@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 export default function App({ Component, pageProps }) {
   const router = useRouter();
 
@@ -11,9 +12,15 @@ export default function App({ Component, pageProps }) {
     // console.log("dsfdfs", router.pathname);
     if (
       token &&
-      (router.pathname === "/login" || router.pathname === "/register" || router.pathname === "/")
+      (router.pathname === "/login" ||
+        router.pathname === "/register" ||
+        router.pathname === "/")
     ) {
       router.push("/product");
+    } else {
+      if (!token) {
+        router.push("/login");
+      }
     }
   }, [router]);
   return (

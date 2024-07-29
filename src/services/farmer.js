@@ -15,9 +15,13 @@ const createFarmerData = (token, payload) => {
 };
 
 // get all customer
-const farmerData = (token, currentPage, itemsPerPage) => {
+const farmerData = (token, currentPage, itemsPerPage, searchResult) => {
+  let url = `${BASE_URL}/farmers?page=${currentPage + 1}&limit=${itemsPerPage}`;
+  if (searchResult !== "") {
+    url += `&search=${searchResult}`;
+  }
   return axios({
-    url: `${BASE_URL}/farmers?page=${currentPage + 1}&limit=${itemsPerPage}`,
+    url: url,
     method: "GET",
     headers: {
       "Content-Type": "application/json",

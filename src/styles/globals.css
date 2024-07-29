@@ -86,9 +86,11 @@
         .list{
             text-align: center;
         }
-        /* .pagination{
-        display:contents ;
-        } */
+        .pagination{
+        display: flex;
+        justify-content: start;
+        
+        }
   }
 
   

@@ -4,8 +4,9 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { Alert } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { TailSpin } from "react-loader-spinner";
+
 import Link from "next/link";
+import Miniloader from "../Loader/miniloader";
 
 const Register = () => {
   const [fname, setFname] = useState("");
@@ -45,131 +46,177 @@ const Register = () => {
   }
 
   return (
-    <div className="grid justify-center mb-9">
-      <div className="mt-9">
-        <h1 className="text-3xl text-center">Register Here</h1>
-      </div>
-      <div className="border shadow-md lg:w-[500px] md:w-[500px] sm:w-[500px] w-[300px] mt-9 p-10">
-        <form onSubmit={handleSubmit(getAllInfo)}>
-          <label htmlFor="firstname">Firstname</label>
-          <input
-            {...register("firstname", { required: true })}
-            type="text"
-            name="firstname"
-            id="firstname"
-            placeholder="Enter Firstname"
-            className="w-full mt-2 mb-3 border border-slate-300 rounded-md py-2 px-4 focus:outline-blue-600"
-            onChange={(e) => setFname(e.target.value)}
-          />
-          {errors.firstname && (
-            <Alert variant="danger">
-              <p className="text-red-600 pb-2">Firstname is required</p>
-            </Alert>
-          )}
-          <label htmlFor="lastname">Lastname</label>
-          <input
-            {...register("lastname", { required: true })}
-            type="text"
-            name="lastname"
-            id="lastname"
-            placeholder="Enter Lastname"
-            className="w-full mt-2 mb-3 border border-slate-300 rounded-md py-2 px-4 focus:outline-blue-600"
-            onChange={(e) => setLname(e.target.value)}
-          />
-          {errors.lastname && (
-            <Alert variant="danger">
-              <p className="text-red-600 pb-2">Lastname is required</p>
-            </Alert>
-          )}
-          <label htmlFor="username">Username</label>
-          <input
-            {...register("username", { required: true })}
-            type="text"
-            name="username"
-            id="username"
-            placeholder="Enter Username"
-            className="w-full mt-2 mb-3 border border-slate-300 rounded-md py-2 px-4 focus:outline-blue-600"
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          {errors.username && (
-            <Alert variant="danger">
-              <p className="text-red-600 pb-2">Username is required</p>
-            </Alert>
-          )}
-          <label htmlFor="email">Email</label>
-          <input
-            {...register("email", { required: true })}
-            type="text"
-            name="email"
-            id="email"
-            placeholder="Enter Email"
-            className="w-full mt-2 mb-3 border border-slate-300 rounded-md py-2 px-4 focus:outline-blue-600"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          {errors.email && (
-            <Alert variant="danger">
-              <p className="text-red-600 pb-2">Email is required</p>
-            </Alert>
-          )}
-          <label htmlFor="password">Password</label>
-          <input
-            {...register("password", {
-              required: true,
-              minLength: 8,
-              pattern:
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%?&])[A-Za-z\d@$!%?&]{8,}$/,
-            })}
-            type="password"
-            name="password"
-            id="password"
-            placeholder="Enter Password"
-            className="w-full mt-2 mb-4 border border-slate-300 rounded-md py-2 px-4 focus:outline-blue-600"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          {errors.password && (
-            <Alert variant="danger">
-              {errors.password.type === "required" && (
-                <p className="text-red-600 pb-2">Password is required</p>
-              )}
-              {errors.password.type === "minLength" && (
-                <p className="text-red-600 pb-2">Minimum length is 8</p>
-              )}
-              {errors.password.type === "pattern" && (
-                <p className="text-red-600 pb-2">
-                  Password must include at least one uppercase letter, one
-                  lowercase letter, one digit, and one special character
-                  (@$!%?&).
-                </p>
-              )}
-            </Alert>
-          )}
-          <div className="flex items-center ">
-            <button
-              type="submit"
-              className="bg-blue-500 w-24 py-2 px-3 rounded-md text-white hover:bg-blue-700 flex justify-center items-center"
-              disabled={loading}
-            >
-              {loading ? (
-                <TailSpin height="25" width="25" color="white" />
-              ) : (
-                "Submit"
-              )}
-            </button>
-            <div className="flex items-center pl-9 ">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-                height="20px"
-                width="20px"
+    <div className="flex flex-wrap min-h-screen w-full content-center justify-center bg-gray-200 py-10">
+      <div className="flex flex-col md:flex-row shadow-md">
+        <div className="flex flex-wrap content-center justify-center rounded-md bg-white w-full md:w-96 h-auto p-6 md:rounded-l-md md:rounded-r-none">
+          <div className="w-72">
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-semibold">
+              Register Here
+            </h1>
+            <small className="text-gray-400 md:text-base lg:text-lg">
+              Please enter your details
+            </small>
+
+            <form className="mt-4" onSubmit={handleSubmit(getAllInfo)}>
+              <div className="mb-3">
+                <label
+                  className="mb-2 block text-xs md:text-sm lg:text-base font-semibold"
+                  htmlFor="firstname"
+                >
+                  Firstname:
+                </label>
+                <input
+                  {...register("firstname", { required: true })}
+                  type="text"
+                  placeholder="Enter your Firstname"
+                  className="block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-1 px-1.5 text-gray-500 text-xs md:text-sm lg:text-base"
+                  name="firstname"
+                  id="firstname"
+                  onChange={(e) => setFname(e.target.value)}
+                />
+                {errors.firstname && (
+                  <Alert variant="danger">
+                    <p className="text-red-600 pb-2">Firstname is required</p>
+                  </Alert>
+                )}
+              </div>
+              <div className="mb-3">
+                <label
+                  className="mb-2 block text-xs md:text-sm lg:text-base font-semibold"
+                  htmlFor="Lastname"
+                >
+                  Lastname:
+                </label>
+                <input
+                  {...register("lastname", { required: true })}
+                  type="text"
+                  placeholder="Enter your Lastname"
+                  className="block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-1 px-1.5 text-gray-500 text-xs md:text-sm lg:text-base"
+                  name="lastname"
+                  id="lastname"
+                  onChange={(e) => setLname(e.target.value)}
+                />
+                {errors.lastname && (
+                  <Alert variant="danger">
+                    <p className="text-red-600 pb-2">Lastname is required</p>
+                  </Alert>
+                )}
+              </div>
+              <div className="mb-3">
+                <label
+                  className="mb-2 block text-xs md:text-sm lg:text-base font-semibold"
+                  htmlFor="username"
+                >
+                  Username:
+                </label>
+                <input
+                  {...register("username", { required: true })}
+                  type="text"
+                  placeholder="Enter your Username"
+                  className="block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-1 px-1.5 text-gray-500 text-xs md:text-sm lg:text-base"
+                  name="username"
+                  id="username"
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+                {errors.username && (
+                  <Alert variant="danger">
+                    <p className="text-red-600 pb-2">Username is required</p>
+                  </Alert>
+                )}
+              </div>
+              <div className="mb-3">
+                <label
+                  className="mb-2 block text-xs md:text-sm lg:text-base font-semibold"
+                  htmlFor="email"
+                >
+                  Email:
+                </label>
+                <input
+                  {...register("email", { required: true })}
+                  type="email"
+                  placeholder="Enter your Email"
+                  className="block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-1 px-1.5 text-gray-500 text-xs md:text-sm lg:text-base"
+                  name="email"
+                  id="email"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                {errors.email && (
+                  <Alert variant="danger">
+                    <p className="text-red-600 pb-2">Email is required</p>
+                  </Alert>
+                )}
+              </div>
+              <div className="mb-3">
+                <label
+                  className="mb-2 block text-xs md:text-sm lg:text-base font-semibold"
+                  htmlFor="password"
+                >
+                  Password:
+                </label>
+                <input
+                  {...register("password", {
+                    required: true,
+                    minLength: 8,
+                    pattern:
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%?&])[A-Za-z\d@$!%?&]{8,}$/,
+                  })}
+                  type="password"
+                  name="password"
+                  id="password"
+                  placeholder="Enter your Password"
+                  className="block w-full rounded-md border border-gray-300 focus:border-green-700 focus:outline-none focus:ring-1 focus:ring-green-700 py-1 px-1.5 text-gray-500 text-xs md:text-sm lg:text-base"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                {errors.password && (
+                  <Alert variant="danger">
+                    {errors.password.type === "required" && (
+                      <p className="text-red-600 pb-2">Password is required</p>
+                    )}
+                    {errors.password.type === "minLength" && (
+                      <p className="text-red-600 pb-2">Minimum length is 8</p>
+                    )}
+                    {errors.password.type === "pattern" && (
+                      <p className="text-red-600 pb-2">
+                        Password must include at least one uppercase letter, one
+                        lowercase letter, one digit, and one special character
+                        (@$!%?&).
+                      </p>
+                    )}
+                  </Alert>
+                )}
+              </div>
+
+              <div className="mb-3">
+                <button
+                  className="mb-1.5 w-full flex justify-center items-center text-white bg-green-500 hover:bg-green-700 px-2 py-1.5 rounded-md text-xs md:text-sm lg:text-base"
+                  type="submit"
+                  disabled={loading}
+                >
+                  {loading ? <Miniloader color={"white"} /> : "Sign up"}
+                </button>
+              </div>
+            </form>
+
+            <div className="text-center">
+              <span className="text-xs md:text-sm lg:text-base text-gray-400 font-semibold">
+                Already have an account?
+              </span>
+              <Link
+                href="/login"
+                className="text-xs md:text-sm lg:text-base font-semibold text-green-700"
               >
-                <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
-              </svg>
-              <Link href="/login" className="pl-1 text-lg hover:text-blue-500">
-                back
+                Login
               </Link>
             </div>
           </div>
-        </form>
+        </div>
+
+        <div className="hidden md:flex flex-wrap content-center justify-center rounded-r-md w-full md:w-96 h-64 md:h-auto">
+          <img
+            className="w-full h-full bg-center bg-no-repeat bg-cover rounded-r-md"
+            src="/farmer2.jpg"
+          />
+        </div>
       </div>
     </div>
   );

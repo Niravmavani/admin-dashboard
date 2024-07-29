@@ -15,9 +15,16 @@ const createProductData = (token, payload) => {
 };
 
 // get all product
-const productData = (token, currentPage, itemsPerPage) => {
+const productData = (token, currentPage, itemsPerPage, searchResult) => {
+  let url = `${BASE_URL}/products?page=${
+    currentPage + 1
+  }&limit=${itemsPerPage}`;
+
+  if (searchResult !== "") {
+    url += `&search=${searchResult}`;
+  }
   return axios({
-    url: `${BASE_URL}/products?page=${currentPage + 1}&limit=${itemsPerPage}`,
+    url: url,
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -52,8 +59,10 @@ const productDelete = (token, productToDelete) => {
 
 //edit product
 const editProduct = (payload, token, productId) => {
+  let url = `${BASE_URL}/products/${productId}`;
+
   return axios({
-    url: `${BASE_URL}/products/${productId}`,
+    url: url,
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -62,10 +71,23 @@ const editProduct = (payload, token, productId) => {
   });
 };
 
+//search product bt filter
+// const searchProductByFilter = (token, value) => {
+//   return axios({
+//     url: `${BASE_URL}/products?search=${value}`,
+//     method: "GET",
+//     headers: {
+//       "Content-Type": "application/json",
+//       Authorization: `Bearer ${token}`,
+//     },
+//   });
+// };
+
 export {
   productData,
   createProductData,
   productDataById,
   editProduct,
   productDelete,
+  // searchProductByFilter,
 };

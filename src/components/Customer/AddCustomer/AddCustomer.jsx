@@ -3,10 +3,11 @@ import axios from "axios";
 import Side_nav from "../../SideNav/Side_nav";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
-import { TailSpin } from "react-loader-spinner";
+
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { createCustomerData } from "../../../services/customer";
+import Miniloader from "@/components/Loader/miniloader";
 
 const AddCustomer = () => {
   const [fname, setFname] = useState("");
@@ -101,7 +102,7 @@ const AddCustomer = () => {
     <div className="flex">
       <Side_nav />
       <div
-        data-aos="fade-left"
+        data-aos="fade-right"
         className="bg-gray-100 ml-[75px] md:ml-[180px] w-full overflow-x-hidden"
       >
         <div className="sm:ml-6 pl-5 sm:pl-0 md:pl-6 pt-5 sm:text-xl text-sm md:text-2xl lg:text-2xl">
@@ -115,9 +116,7 @@ const AddCustomer = () => {
                 <label htmlFor="image">Image</label>
                 <div className="col-span-2 flex flex-col items-center gap-4 @xl:flex-row">
                   <div className="relative">
-                    {imgloading && (
-                      <TailSpin height="25" width="25" color="black" />
-                    )}
+                    {imgloading && <Miniloader color={"#228B22"} />}
                     {imgPreview ? (
                       <>
                         <img
@@ -197,7 +196,7 @@ const AddCustomer = () => {
                   name="name"
                   id="name"
                   placeholder="Enter Product Name"
-                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-blue-600 mb-3"
+                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
                   onChange={(e) => setFname(e.target.value)}
                 />
                 <label htmlFor="number">Phone Number</label>
@@ -206,7 +205,7 @@ const AddCustomer = () => {
                   name="number"
                   id="number"
                   placeholder="Enter Phone Number"
-                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-blue-600 mb-3"
+                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
                   onChange={(e) => setPhone(e.target.value)}
                 />
                 <label htmlFor="village">Village</label>
@@ -215,7 +214,7 @@ const AddCustomer = () => {
                   name="village"
                   id="village"
                   placeholder="Enter Village"
-                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-blue-600 mb-3"
+                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
                   onChange={(e) => setVillage(e.target.value)}
                 />
                 <label htmlFor="gender">Gender</label>
@@ -224,7 +223,7 @@ const AddCustomer = () => {
                   name="gender"
                   id="gender"
                   placeholder="Enter Gender"
-                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-blue-600 mb-3"
+                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
                   onChange={(e) => setGender(e.target.value)}
                 />
                 <label htmlFor="username">Username</label>
@@ -233,7 +232,7 @@ const AddCustomer = () => {
                   name="username"
                   id="username"
                   placeholder="Enter Username"
-                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-blue-600 mb-3"
+                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
                   onChange={(e) => setUsername(e.target.value)}
                 />
 
@@ -243,7 +242,7 @@ const AddCustomer = () => {
                   name="email"
                   id="email"
                   placeholder="Enter Email"
-                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-blue-600 mb-3"
+                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
                   onChange={(e) => setEmail(e.target.value)}
                 />
                 <label htmlFor="remarks">Remarks</label>
@@ -252,20 +251,18 @@ const AddCustomer = () => {
                   name="remarks"
                   id="remarks"
                   placeholder="Enter Remarks"
-                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-blue-600 mb-3"
+                  className="w-full border border-slate-300 rounded-md py-1 px-4 sm:py-2 sm:px-4 md:py-2 md:px-4 lg:py-2 lg:px-4 mt-3 focus:outline-none focus:ring-2 focus:ring-green-600 mb-3"
                   onChange={(e) => setRemarks(e.target.value)}
                 />
 
                 <button
                   type="submit"
-                  className="bg-blue-500 w-24 py-2 px-3 rounded-md text-white hover:bg-blue-700 flex justify-center items-center"
+                  className={`${
+                    loading ? "bg-green-400" : "bg-green-500"
+                  } w-24 py-2 px-3 rounded-md text-white hover:bg-green-700 flex justify-center items-center`}
                   disabled={loading}
                 >
-                  {loading ? (
-                    <TailSpin height="25" width="25" color="white" />
-                  ) : (
-                    "Submit"
-                  )}
+                  {loading ? <Miniloader color={"white"} /> : "Submit"}
                 </button>
               </form>
             </div>

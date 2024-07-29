@@ -5,28 +5,32 @@ import { BiShowAlt } from "react-icons/bi";
 import { MdDelete } from "react-icons/md";
 import Link from "next/link";
 import { useRouter } from "next/router";
+
 import { toast } from "react-toastify";
-import { IoClose } from "react-icons/io5";
-import { IoSearchSharp } from "react-icons/io5";
+import { IoClose, IoSearchSharp } from "react-icons/io5";
+import SideNav from "../SideNav/Side_nav";
 import AOS from "aos";
+import ReactSwitch from "react-switch";
+
 import "aos/dist/aos.css";
 import ReactPaginate from "react-paginate";
-import { productData, productDelete } from "@/services/product";
-import ReactSwitch from "react-switch";
-import { editProduct } from "@/services/product";
+import {
+  expenseData,
+  expenseDelete,
+  editExpense,
+} from "../../services/expense";
 import Bigloader from "../Loader/bigloader";
 import Miniloader from "../Loader/miniloader";
-// import moment from "moment";
 
-const Product_page = () => {
-  const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState();
+const Expense = () => {
+  const [expense, setExpense] = useState([]);
+  const [selectedExpense, setSelectedExpense] = useState();
   const [loading, setLoading] = useState(false);
   const [switchLoading, setSwitchLoading] = useState(false);
   const [deleteloading, setDeleteLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showDataModal, setShowDataModal] = useState(false);
-  const [productToDelete, setProductToDelete] = useState(null);
+  const [expenseToDelete, setExpenseToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(5);
   const [totalPages, setTotalPages] = useState(0);
@@ -36,33 +40,35 @@ const Product_page = () => {
   const router = useRouter();
 
   const toEdit = (id) => {
-    router.push(`/product/edit/${id}`);
+    router.push(`/expense/edit/${id}`);
   };
-
-  async function fetchProducts() {
+  async function fetchExpense() {
     const token = localStorage.getItem("token");
-    setLoading(true);
     try {
-      const response = await productData(
+      setLoading(true);
+      const response = await expenseData(
         token,
         currentPage,
         itemsPerPage,
         searchResult
       );
-      setProducts(response?.data?.items);
-      setTotalPages(response?.data?.totalPages);
+
+      setLoading(false);
+      console.log("response", response);
+      setExpense(response?.data?.items);
       setCurrentPage(response?.data?.currentPageNumber - 1);
-      // console.log(response?.data?.items);
+
+      setTotalPages(response?.data?.totalPages);
     } catch (error) {
-      console.log("Error fetching products:", error);
+      setLoading(false);
+      console.log("Error fetching Expense:", error);
     }
-    setLoading(false);
   }
   useEffect(() => {
     AOS.init();
     AOS.refresh();
 
-    fetchProducts();
+    fetchExpense();
   }, [currentPage, debouncedSearch]);
 
   useEffect(() => {
@@ -77,51 +83,50 @@ const Product_page = () => {
 
   const handleDelete = async () => {
     const token = localStorage.getItem("token");
-    setDeleteLoading(true);
+
     try {
-      const response = await productDelete(token, productToDelete);
+      setDeleteLoading(true);
+      const response = await expenseDelete(token, expenseToDelete);
       if (response) {
-        fetchProducts();
+        fetchExpense();
       }
+      setDeleteLoading(false);
       toast.success(response?.data?.message);
     } catch (error) {
-      console.log("Error deleting product:", error);
+      console.log("Error deleting expense:", error);
+      setDeleteLoading(false);
     } finally {
       setShowModal(false);
+      setDeleteLoading(false);
     }
-    setDeleteLoading(false);
-  };
-
-  const searchProduct = async (value) => {
-    setSearchResult(value);
   };
 
   const confirmDelete = (id) => {
-    setProductToDelete(id);
+    setExpenseToDelete(id);
     setShowModal(true);
   };
 
-  const productDetail = (item) => {
+  const expenseDetail = (item) => {
     setShowDataModal(true);
-    setSelectedProduct(item);
+    setSelectedExpense(item);
   };
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
 
-  const updateStatus = async (product) => {
+  const updateStatus = async (expense) => {
     const token = localStorage.getItem("token");
-    setSwitchLoading(product._id);
+    setSwitchLoading(expense._id);
     try {
       const payload = {
-        status: !product.status,
+        status: !expense.status,
       };
-      const response = await editProduct(payload, token, product._id);
+      const response = await editExpense(token, expense._id, payload);
       if (response) {
-        setProducts((prevProducts) =>
-          prevProducts.map((p) =>
-            p._id === product._id ? { ...p, status: payload.status } : p
+        setExpense((prevExpense) =>
+          prevExpense.map((e) =>
+            e._id === expense._id ? { ...e, status: payload.status } : e
           )
         );
       }
@@ -131,22 +136,27 @@ const Product_page = () => {
     setSwitchLoading(null);
   };
 
+  const searchExpense = async (value) => {
+    setSearchResult(value);
+  };
+
   return (
     <div className="flex bg-gray-100 min-h-screen">
+      <SideNav />
       <div
-        className="md:ml-[199px] ml-20  p-5  w-full overflow-x-hidden"
+        className="md:ml-[199px] ml-20  p-5  w-full overflow-x-hidden "
         data-aos="fade-left"
       >
         <div className="flex items-center justify-between productHeader">
           <div className="list sm:text-xl text-md md:text-2xl lg:text-2xl font-bold text-gray-800">
-            Product List
+            Expense List
           </div>
           <div className="">
             <Link
-              href="/product/add"
+              href="/expense/add"
               className="add  md:mr-5 transition duration-600 hover:bg-gradient-to-br hover:from-white hover:to-white hover:text-black hover:outline hover:outline-green-600 bg-gradient-to-br from-green-600 to-green-800 text-white text-sm md:text-lg py-2 px-4 rounded-lg shadow-md "
             >
-              Add Product
+              Add Expense
             </Link>
           </div>
         </div>
@@ -159,8 +169,8 @@ const Product_page = () => {
                 </div>
                 <input
                   type="text"
-                  placeholder="Search Product"
-                  onChange={(e) => searchProduct(e.target.value)}
+                  placeholder="Search Expense"
+                  onChange={(e) => searchExpense(e.target.value)}
                   className="border rounded-md p-2 pl-10 w-full outline-green-600"
                 />
               </div>
@@ -168,45 +178,50 @@ const Product_page = () => {
 
             {loading ? (
               <div className="flex justify-center pt-4">
-                <Bigloader />
+                <Bigloader color={"#228B22"} />
               </div>
-            ) : products.length !== 0 ? (
+            ) : expense?.length !== 0 ? (
               <table className="w-full rtl:text-right whitespace-nowrap">
                 <thead className="bg-gray-200 text-gray-600 uppercase ">
                   <tr className="border-b border-t text-sm sm:text-sm md:text-md lg:text-md">
-                    <th className="py-2 px-3 text-start w-[170px]">Image</th>
-                    <th className="py-2">Code</th>
-                    <th className="py-2">Name</th>
-                    <th className="py-2">Type</th>
-                    <th className="py-2">Status</th>
+                    <th className="py-2 px-3 ">image</th>
+                    <th className="py-2 px-3 ">code</th>
+                    <th className="py-2 px-3 ">Name</th>
 
-                    <th className="py-2 px-3 text-end w-[200px]">Actions</th>
+                    <th className="py-2 px-3">Phone</th>
+
+                    <th className="py-2 px-3 ">Remarks</th>
+                    <th className="py-2 px-3 ">Status</th>
+                    <th className="py-2 px-3 text-end">Action</th>
                   </tr>
                 </thead>
 
                 <tbody>
-                  {products?.map((product) => (
+                  {expense.map((expense) => (
                     <tr
-                      key={product._id}
+                      key={expense._id}
                       className="border-b last:border-0 hover:bg-gray-50 transition"
                     >
                       <td className="py-3 px-1 flex justify-start transition-all duration-300 ease-in-out transform hover:scale-105">
                         <img
-                          src={product.image}
-                          alt={product.productName}
+                          src={expense.image}
+                          alt={expense.image}
                           className="h-16 w-16 object-cover rounded-lg shadow-md "
                         />
                       </td>
-                      <td className="py-2 px-1 text-center">{product.code}</td>
+                      <td className="py-2 px-1 text-center">{expense.code}</td>
+                      <td className="py-2 px-1 text-center">{expense.name}</td>
+                      <td className="py-2 px-1 text-center">{expense.phone}</td>
+
                       <td className="py-2 px-1 text-center">
-                        {product.productName}
+                        {expense.remarks}
                       </td>
-                      <td className="py-2 px-1 text-center">{product.type}</td>
+
                       <td className="py-2 px-1 text-center w-[100px]">
                         <div className="flex space-x-2 justify-center items-center">
                           <ReactSwitch
-                            checked={product.status}
-                            onChange={() => updateStatus(product)}
+                            checked={expense.status}
+                            onChange={() => updateStatus(expense)}
                             offColor="#888"
                             onColor="#228B22"
                             handleDiameter={20}
@@ -216,30 +231,28 @@ const Product_page = () => {
                             width={48}
                             className="react-switch"
                           />
-                          {switchLoading === product._id && (
+                          {switchLoading === expense._id && (
                             <Miniloader color={"green"} />
                           )}
                         </div>
                       </td>
-                      {/* <td>
-                          {moment(product.createdAt).format("DD / MM / YYYY")}
-                        </td> */}
-                      <td className="py-2 px-1 ">
+
+                      <td className="py-2 px-1">
                         <div className="flex justify-end gap-4 sm:gap-4 md:gap-7 lg:gap-7">
                           <BiShowAlt
                             className="h-6 w-6 text-purple-500"
                             cursor="pointer"
-                            onClick={() => productDetail(product)}
+                            onClick={() => expenseDetail(expense)}
                           />
                           <FaRegEdit
                             className="h-5 w-6 text-green-500"
-                            onClick={() => toEdit(product._id)}
+                            onClick={() => toEdit(expense._id)}
                             cursor="pointer"
                           />
                           <MdDelete
-                            className="h-6 w-6 text-red-500"
+                            className="h-5 w-6 text-red-500"
+                            onClick={() => confirmDelete(expense._id)}
                             cursor="pointer"
-                            onClick={() => confirmDelete(product._id)}
                           />
                         </div>
                       </td>
@@ -252,8 +265,8 @@ const Product_page = () => {
                 No Data found.
               </div>
             )}
-            {products?.length !== 0 && (
-              <div className="pagination mt-3  flex justify-end  items-center">
+            {expense?.length !== 0 && (
+              <div className="pagination mt-3 flex justify-center md:justify-end items-center">
                 <ReactPaginate
                   previousLabel={"Previous"}
                   nextLabel={"Next"}
@@ -289,67 +302,65 @@ const Product_page = () => {
         </div>
       </div>
 
-      {/* Modal for Delete Confirmation */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 w-[90%] md:w-[50%]">
-            <h2 className="text-lg font-semibold mb-4">Delete Product</h2>
-            <p className="mb-4">
-              Are you sure you want to delete this product?
-            </p>
-            <div className="flex justify-end">
+        <div className="md:ml-[199px] ml-[75px] fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+          <div
+            data-aos="zoom-in-up"
+            className="deletebox bg-white p-6 rounded-lg shadow-lg"
+          >
+            <h2 className="text-lg font-semibold mb-4">Confirm Delete</h2>
+            <p>Are you sure you want to delete this expense?</p>
+            <div className="flex justify-end gap-4 mt-4">
               <button
-                className="bg-gray-300 text-gray-800 py-2 px-4 rounded mr-2"
                 onClick={() => setShowModal(false)}
+                className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-300"
               >
                 Cancel
               </button>
+
               <button
-                className="bg-red-500 text-white py-2 px-4 rounded"
                 onClick={handleDelete}
+                type="submit"
+                className="bg-red-600 w-24 py-2 px-3 rounded-md text-white hover:bg-red-700 flex justify-center items-center"
+                disabled={loading}
               >
-                {deleteloading ? <Miniloader /> : "Delete"}
+                {deleteloading ? <Miniloader color={"white"} /> : "Submit"}
               </button>
             </div>
           </div>
         </div>
       )}
-
-      {/* Modal for Product Details */}
-      {showDataModal && selectedProduct && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 w-[90%] md:w-[50%] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Product Details</h2>
-              <button
-                className="text-gray-500 hover:text-gray-800"
+      {showDataModal && (
+        <div className="md:ml-[199px] ml-[75px] fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50  ">
+          <div
+            data-aos="flip-left"
+            className="box sm:w-auto bg-white p-6 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+          >
+            <div className="flex justify-between">
+              <h2 className="text-lg font-semibold mb-4 font-serif">Details</h2>
+              <IoClose
                 onClick={() => setShowDataModal(false)}
-              >
-                <IoClose size={24} />
-              </button>
+                className="rounded-md h-5 w-5 cursor-pointer"
+              />
             </div>
-            <div className="mt-4">
-              <div className="flex justify-center mb-4">
-                <img
-                  src={selectedProduct.image}
-                  alt={selectedProduct.productName}
-                  className="h-48 w-48 object-cover rounded-lg shadow-md"
-                />
-              </div>
-              <p className="mb-2">
-                <strong>Code:</strong> {selectedProduct.code}
-              </p>
-              <p className="mb-2">
-                <strong>Name:</strong> {selectedProduct.productName}
-              </p>
-              <p className="mb-2">
-                <strong>Type:</strong> {selectedProduct.type}
-              </p>
-              <p className="mb-2">
-                <strong>Status:</strong>{" "}
-                {selectedProduct.status ? "Active" : "Inactive"}
-              </p>
-            </div>
+            <img
+              src={selectedExpense?.image}
+              alt=""
+              className="rounded-xl h-40 w-40 object-cover"
+            />
+            <p className="text-lg pt-3 font-bold font-serif">
+              Name : {selectedExpense?.code}
+            </p>
+            <p className="text-lg pt-3 font-bold font-serif">
+              Name : {selectedExpense?.name}
+            </p>
+            <p className="text-lg pt-3 font-bold font-serif">
+              Phone : {selectedExpense?.phone}
+            </p>
+
+            <p className="text-lg pt-3 font-bold font-serif">
+              Remarks : {selectedExpense?.remarks}
+            </p>
           </div>
         </div>
       )}
@@ -357,4 +368,4 @@ const Product_page = () => {
   );
 };
 
-export default Product_page;
+export default Expense;

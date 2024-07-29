@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { FaBox, FaTractor, FaUsers } from "react-icons/fa";
+import { GiExpense } from "react-icons/gi";
 import { TbLogout2 } from "react-icons/tb";
 import { useRouter } from "next/router";
 
@@ -19,13 +20,13 @@ const SideNav = () => {
 
   return (
     <div
-      className={`z-10 fixed top-0 left-0 h-screen bg-gradient-to-br from-indigo-600 to-purple-600 text-white shadow-lg border p-4 ${
+      className={`z-10 fixed top-0 left-0 h-screen bg-gradient-to-br from-green-600 to-green-800 text-white shadow-lg border p-4 ${
         open ? "w-[160px]" : "w-[75px]"
       } md:w-[200px] transition-all duration-300`}
     >
       <button
         type="button"
-        className="inline-flex items-center p-2 justify-center text-sm rounded-lg hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-400 md:hidden"
+        className="inline-flex items-center p-2 justify-center text-sm rounded-lg hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-400 md:hidden"
         onClick={toggleSidebar}
       >
         <svg
@@ -50,28 +51,36 @@ const SideNav = () => {
         </h1>
         <ul className="space-y-3">
           <li
-            className={`font-semibold text-sm sm:text-sm md:text-lg lg:text-lg rounded px-4 py-2 flex items-center space-x-2 cursor-pointer transition duration-200 hover:bg-purple-500 hover:text-white ${
-              router.pathname === "/product" ? "bg-purple-500 text-white" : ""
+            className={`font-semibold text-sm sm:text-sm md:text-lg lg:text-lg rounded px-4 py-2 flex items-center space-x-2 cursor-pointer transition duration-200 hover:bg-green-500 hover:text-white ${
+              router.pathname === "/product" ? "bg-green-500 text-white" : ""
             }`}
           >
             <FaBox />
             <Link href="/product">Product</Link>
           </li>
           <li
-            className={`font-semibold text-sm sm:text-sm md:text-lg lg:text-lg rounded px-4 py-2 flex items-center space-x-2 cursor-pointer transition duration-200 hover:bg-purple-500 hover:text-white ${
-              router.pathname === "/farmer" ? "bg-purple-500 text-white" : ""
+            className={`font-semibold text-sm sm:text-sm md:text-lg lg:text-lg rounded px-4 py-2 flex items-center space-x-2 cursor-pointer transition duration-200 hover:bg-green-500 hover:text-white ${
+              router.pathname === "/farmer" ? "bg-green-500 text-white" : ""
             }`}
           >
             <FaTractor />
             <Link href="/farmer">Farmer</Link>
           </li>
           <li
-            className={`font-semibold text-sm sm:text-sm md:text-lg lg:text-lg rounded px-4 py-2 flex items-center space-x-2 cursor-pointer transition duration-200 hover:bg-purple-500 hover:text-white ${
-              router.pathname === "/customer" ? "bg-purple-500 text-white" : ""
+            className={`font-semibold text-sm sm:text-sm md:text-lg lg:text-lg rounded px-4 py-2 flex items-center space-x-2 cursor-pointer transition duration-200 hover:bg-green-500 hover:text-white ${
+              router.pathname === "/customer" ? "bg-green-500 text-white" : ""
             }`}
           >
             <FaUsers />
             <Link href="/customer">Customer</Link>
+          </li>
+          <li
+            className={`font-semibold text-sm sm:text-sm md:text-lg lg:text-lg rounded px-4 py-2 flex items-center space-x-2 cursor-pointer transition duration-200 hover:bg-green-500 hover:text-white ${
+              router.pathname === "/expense" ? "bg-green-500 text-white" : ""
+            }`}
+          >
+            <GiExpense />
+            <Link href="/expense">Expense</Link>
           </li>
         </ul>
       </div>
@@ -85,7 +94,7 @@ const SideNav = () => {
           <button
             type="submit"
             onClick={logOut}
-            className="hidden md:inline-block bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+            className="hidden md:inline-block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
           >
             Logout
           </button>
