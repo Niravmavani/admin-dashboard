@@ -316,40 +316,33 @@ const Product_page = () => {
       )}
 
       {/* Modal for Product Details */}
-      {showDataModal && selectedProduct && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 w-[90%] md:w-[50%] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Product Details</h2>
-              <button
-                className="text-gray-500 hover:text-gray-800"
+      {showDataModal && (
+        <div className="md:ml-[199px] ml-[75px] fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50  ">
+          <div
+            data-aos="flip-left"
+            className="box sm:w-auto bg-white p-6 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+          >
+            <div className="flex justify-between">
+              <h2 className="text-lg font-semibold mb-4 font-serif">Details</h2>
+              <IoClose
                 onClick={() => setShowDataModal(false)}
-              >
-                <IoClose size={24} />
-              </button>
+                className="rounded-md h-5 w-5 cursor-pointer"
+              />
             </div>
-            <div className="mt-4">
-              <div className="flex justify-center mb-4">
-                <img
-                  src={selectedProduct.image}
-                  alt={selectedProduct.productName}
-                  className="h-48 w-48 object-cover rounded-lg shadow-md"
-                />
-              </div>
-              <p className="mb-2">
-                <strong>Code:</strong> {selectedProduct.code}
-              </p>
-              <p className="mb-2">
-                <strong>Name:</strong> {selectedProduct.productName}
-              </p>
-              <p className="mb-2">
-                <strong>Type:</strong> {selectedProduct.type}
-              </p>
-              <p className="mb-2">
-                <strong>Status:</strong>{" "}
-                {selectedProduct.status ? "Active" : "Inactive"}
-              </p>
-            </div>
+            <img
+              src={selectedProduct?.image}
+              alt=""
+              className="rounded-xl h-40 w-40 object-cover"
+            />
+            <p className="text-lg pt-3 font-bold font-serif">
+              Code : {selectedProduct?.code}
+            </p>
+            <p className="text-lg pt-3 font-bold font-serif">
+              Name : {selectedProduct?.name}
+            </p>
+            <p className="text-lg pt-3 font-bold font-serif">
+              Phone : {selectedProduct?.type}
+            </p>
           </div>
         </div>
       )}

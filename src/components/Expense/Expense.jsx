@@ -349,7 +349,7 @@ const Expense = () => {
               className="rounded-xl h-40 w-40 object-cover"
             />
             <p className="text-lg pt-3 font-bold font-serif">
-              Name : {selectedExpense?.code}
+              Code : {selectedExpense?.code}
             </p>
             <p className="text-lg pt-3 font-bold font-serif">
               Name : {selectedExpense?.name}
